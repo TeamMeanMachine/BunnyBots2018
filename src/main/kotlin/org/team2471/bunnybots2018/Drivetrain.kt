@@ -1,4 +1,4 @@
-package org.team2471.workshop
+package org.team2471.bunnybots2018
 
 import com.ctre.phoenix.motorcontrol.ControlMode
 import com.ctre.phoenix.motorcontrol.can.TalonSRX

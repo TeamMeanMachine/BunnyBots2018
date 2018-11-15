@@ -1,4 +1,4 @@
-package org.team2471.workshop
+package org.team2471.bunnybots2018
 
 import org.team2471.frc.lib.framework.RobotProgram
 import org.team2471.frc.lib.framework.initializeWpilib
