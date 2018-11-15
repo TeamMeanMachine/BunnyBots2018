@@ -10,6 +10,9 @@ object OI {
     val driveThrottle: Double
         get() = -driverController.getY(GenericHID.Hand.kLeft)
 
-    val driveTurn: Double
+    val softTurn: Double
         get() = driverController.getX(GenericHID.Hand.kRight)
+    val hardTurn: Double
+        get() = driverController.getTriggerAxis(GenericHID.Hand.kRight) - driverController.getTriggerAxis(GenericHID.Hand.kLeft)
+
 }
