@@ -12,6 +12,7 @@ object OI {
 
     val softTurn: Double
         get() = driverController.getX(GenericHID.Hand.kRight)
+
     val hardTurn: Double
         get() = driverController.getTriggerAxis(GenericHID.Hand.kRight) - driverController.getTriggerAxis(GenericHID.Hand.kLeft)
 

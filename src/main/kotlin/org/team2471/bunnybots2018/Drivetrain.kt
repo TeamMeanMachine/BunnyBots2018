@@ -2,19 +2,28 @@ package org.team2471.bunnybots2018
 
 import com.ctre.phoenix.motorcontrol.ControlMode
 import com.ctre.phoenix.motorcontrol.FeedbackDevice
+import com.ctre.phoenix.motorcontrol.NeutralMode
 import com.ctre.phoenix.motorcontrol.can.TalonSRX
 import edu.wpi.first.wpilibj.Solenoid
+import edu.wpi.first.wpilibj.drive.DifferentialDrive
 import org.team2471.frc.lib.coroutines.periodic
 import org.team2471.frc.lib.framework.DaemonSubsystem
+import org.team2471.frc.lib.framework.use
 
 object Drivetrain : DaemonSubsystem("Drivetrain") {
     private const val EDGES_PER_100_MS = 216 * 4.0 / 10.0 //uh this is probably wrong idk what the actual number is idsfl;kafjiod;sajfoipw;das
     private const val HIGH_SHIFTPOINT = 5.0
     private const val LOW_SHIFTPOINT = 4.0
+    const val PEAK_CURRENT_LIMIT = 0
+    const val CONTINUOUS_CURRENT_LIMIT = 40
+    const val PEAK_CURRENT_DURATION = 100
+
+    const val DISTANCE_P = 2.0 * 0.40 // 0.75
+    const val DISTANCE_D = 0.5
 
     private val leftMaster = TalonSRX(0)
     private val rightMaster = TalonSRX(15)
-    private val shifter = Solenoid(0)
+//    private val shifter = Solenoid(0)
 
     val speed: Double get() = Math.abs(-leftMaster.getSelectedSensorVelocity(1)/ EDGES_PER_100_MS +
             rightMaster.getSelectedSensorVelocity(1) / EDGES_PER_100_MS) / 2.0
@@ -37,9 +46,57 @@ object Drivetrain : DaemonSubsystem("Drivetrain") {
 
         leftMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 1, 10)
         rightMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 1, 10)
+
+        leftMaster.setNeutralMode(NeutralMode.Brake)
+        leftSlave1.setNeutralMode(NeutralMode.Coast)
+        leftSlave2.setNeutralMode(NeutralMode.Coast)
+
+        rightMaster.setNeutralMode(NeutralMode.Brake)
+        rightSlave1.setNeutralMode(NeutralMode.Coast)
+        rightSlave2.setNeutralMode(NeutralMode.Coast)
+
+        leftMaster.configPeakCurrentLimit(PEAK_CURRENT_LIMIT, 10)
+        leftMaster.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT, 10)
+        leftMaster.configPeakCurrentDuration(PEAK_CURRENT_DURATION, 10)
+        leftMaster.enableCurrentLimit(true)
+        leftSlave1.configPeakCurrentLimit(PEAK_CURRENT_LIMIT, 10)
+        leftSlave1.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT, 10)
+        leftSlave1.configPeakCurrentDuration(PEAK_CURRENT_DURATION, 10)
+        leftSlave1.enableCurrentLimit(true)
+        leftSlave2.configPeakCurrentLimit(PEAK_CURRENT_LIMIT, 10)
+        leftSlave2.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT, 10)
+        leftSlave2.configPeakCurrentDuration(PEAK_CURRENT_DURATION, 10)
+        leftSlave2.enableCurrentLimit(true)
+
+        rightMaster.configPeakCurrentLimit(PEAK_CURRENT_LIMIT, 10)
+        rightMaster.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT, 10)
+        rightMaster.configPeakCurrentDuration(PEAK_CURRENT_DURATION, 10)
+        rightMaster.enableCurrentLimit(true)
+        rightSlave1.configPeakCurrentLimit(PEAK_CURRENT_LIMIT, 10)
+        rightSlave1.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT, 10)
+        rightSlave1.configPeakCurrentDuration(PEAK_CURRENT_DURATION, 10)
+        rightSlave1.enableCurrentLimit(true)
+        rightSlave2.configPeakCurrentLimit(PEAK_CURRENT_LIMIT, 10)
+        rightSlave2.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT, 10)
+        rightSlave2.configPeakCurrentDuration(PEAK_CURRENT_DURATION, 10)
+        rightSlave2.enableCurrentLimit(true)
+
+        leftMaster.configClosedloopRamp(0.1, 10)
+        leftMaster.configOpenloopRamp(0.0, 10)
+        leftMaster.config_kP(0, DISTANCE_P, 10)
+        leftMaster.config_kD(0, DISTANCE_D, 10)
+        leftMaster.config_kF(0, 0.0, 10)
+        leftMaster.selectProfileSlot(0, 0)
+
+        rightMaster.configClosedloopRamp(0.1, 10)
+        rightMaster.configOpenloopRamp(0.0, 10)
+        rightMaster.config_kP(0, DISTANCE_P, 10)
+        rightMaster.config_kD(0, DISTANCE_D, 10)
+        rightMaster.config_kF(0, 0.0, 10)
+        rightMaster.selectProfileSlot(0, 0)
     }
 
-    fun drive(throttle: Double, softTurn: Double, hardTurn: Double){
+    fun drive(throttle: Double, softTurn: Double, hardTurn: Double) {
         val totalTurn = (softTurn * Math.abs(throttle)) + hardTurn
 
         var leftPower = throttle + totalTurn
@@ -51,24 +108,33 @@ object Drivetrain : DaemonSubsystem("Drivetrain") {
             rightPower /= maxPower
         }
 
-        if(speed > HIGH_SHIFTPOINT) {
-            shifter.set(true)
-        } else if (speed < LOW_SHIFTPOINT) {
-            shifter.set(false)
-        }
+//        if(speed > HIGH_SHIFTPOINT) {
+//            shifter.set(true)
+//        } else if (speed < LOW_SHIFTPOINT) {
+//            shifter.set(false)
+//        }
 
         leftMaster.set(ControlMode.PercentOutput, leftPower)
         rightMaster.set(ControlMode.PercentOutput, rightPower)
+    }
+
+    fun zeroDistances() {
+    }
+
+    fun driveToSetPoints(leftDistance: Double, rightDistance: Double) {
     }
 
     override suspend fun default() {
         println("Made it to default")
         periodic {
             val throttle = OI.driveThrottle
-            val hardTurn = OI.hardTurn
             val softTurn = OI.softTurn
-            drive(throttle, hardTurn, softTurn)
+            val hardTurn = OI.hardTurn
+            drive(throttle, softTurn, hardTurn)
             false
         }
     }
+}
+
+suspend fun Drivetrain.driveAlongPath() = use(Drivetrain) {
 }
