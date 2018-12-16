@@ -11,15 +11,14 @@ object Drivetrain : DaemonSubsystem("Drivetrain") {
     private const val LOW_SHIFTPOINT = 4.0
 
     private const val PEAK_CURRENT_LIMIT = 0
-    private const val CONTINUOUS_CURRENT_LIMIT = 40
+    private const val CONTINUOUS_CURRENT_LIMIT = 25
     private const val PEAK_CURRENT_DURATION = 100
 
     private const val DISTANCE_P = 2.0 * 0.40 // 0.75
     private const val DISTANCE_D = 0.5
 
-
-    private val leftMotors = TalonSRX(Talons.DRIVE_LEFT_1, Talons.DRIVE_LEFT_2, Talons.DRIVE_LEFT_3).config {
-        inverted(true)
+    private val leftMotors = TalonSRX(Talons.DRIVE_LEFT_1, Talons.DRIVE_LEFT_2, Talons.DRIVE_LEFT_3)
+        .config {
         brakeMode()
         currentLimit(CONTINUOUS_CURRENT_LIMIT, PEAK_CURRENT_LIMIT, PEAK_CURRENT_DURATION)
         closedLoopRamp(0.1)
@@ -28,8 +27,10 @@ object Drivetrain : DaemonSubsystem("Drivetrain") {
             d(DISTANCE_D)
         }
     }
-    private val rightMotors = TalonSRX(Talons.DRIVE_RIGHT_1, Talons.DRIVE_RIGHT_2, Talons.DRIVE_RIGHT_3).config {
+    private val rightMotors = TalonSRX(Talons.DRIVE_RIGHT_1, Talons.DRIVE_RIGHT_2, Talons.DRIVE_RIGHT_3)
+        .config {
         brakeMode()
+        inverted(true)
         currentLimit(CONTINUOUS_CURRENT_LIMIT, PEAK_CURRENT_LIMIT, PEAK_CURRENT_DURATION)
         closedLoopRamp(0.1)
         pid(0) {
