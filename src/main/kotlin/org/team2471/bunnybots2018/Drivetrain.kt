@@ -4,25 +4,24 @@ import com.ctre.phoenix.motorcontrol.ControlMode
 import com.ctre.phoenix.motorcontrol.FeedbackDevice
 import com.ctre.phoenix.motorcontrol.NeutralMode
 import com.ctre.phoenix.motorcontrol.can.TalonSRX
-import edu.wpi.first.wpilibj.Solenoid
-import edu.wpi.first.wpilibj.drive.DifferentialDrive
 import org.team2471.frc.lib.coroutines.periodic
 import org.team2471.frc.lib.framework.DaemonSubsystem
 import org.team2471.frc.lib.framework.use
 
 object Drivetrain : DaemonSubsystem("Drivetrain") {
-    private const val EDGES_PER_100_MS = 216 * 4.0 / 10.0 //uh this is probably wrong idk what the actual number is idsfl;kafjiod;sajfoipw;das
+    private const val EDGES_PER_100_MS = 216 * 4.0 / 10.0
     private const val HIGH_SHIFTPOINT = 5.0
     private const val LOW_SHIFTPOINT = 4.0
-    const val PEAK_CURRENT_LIMIT = 0
-    const val CONTINUOUS_CURRENT_LIMIT = 40
-    const val PEAK_CURRENT_DURATION = 100
 
-    const val DISTANCE_P = 2.0 * 0.40 // 0.75
-    const val DISTANCE_D = 0.5
+    private const val PEAK_CURRENT_LIMIT = 0
+    private const val CONTINUOUS_CURRENT_LIMIT = 40
+    private const val PEAK_CURRENT_DURATION = 100
 
-    private val leftMaster = TalonSRX(0)
-    private val rightMaster = TalonSRX(15)
+    private const val DISTANCE_P = 2.0 * 0.40 // 0.75
+    private const val DISTANCE_D = 0.5
+
+    private val leftMaster = TalonSRX(Talons.DRIVE_LEFT_1)
+    private val rightMaster = TalonSRX(Talons.DRIVE_RIGHT_1)
 //    private val shifter = Solenoid(0)
 
     val speed: Double get() = Math.abs(-leftMaster.getSelectedSensorVelocity(1)/ EDGES_PER_100_MS +
@@ -30,10 +29,10 @@ object Drivetrain : DaemonSubsystem("Drivetrain") {
 
 
     init {
-        val leftSlave1 = TalonSRX(1)
-        val leftSlave2 = TalonSRX(2)
-        val rightSlave1 = TalonSRX(14)
-        val rightSlave2 = TalonSRX(13)
+        val leftSlave1 = TalonSRX(Talons.DRIVE_LEFT_2)
+        val leftSlave2 = TalonSRX(Talons.DRIVE_LEFT_3)
+        val rightSlave1 = TalonSRX(Talons.DRIVE_RIGHT_2)
+        val rightSlave2 = TalonSRX(Talons.DRIVE_RIGHT_3)
 
         leftSlave1.follow(leftMaster)
         leftSlave2.follow(leftMaster)
@@ -125,13 +124,11 @@ object Drivetrain : DaemonSubsystem("Drivetrain") {
     }
 
     override suspend fun default() {
-        println("Made it to default")
         periodic {
             val throttle = OI.driveThrottle
             val softTurn = OI.softTurn
             val hardTurn = OI.hardTurn
             drive(throttle, softTurn, hardTurn)
-            false
         }
     }
 }
