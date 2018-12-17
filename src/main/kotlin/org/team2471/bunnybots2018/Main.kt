@@ -26,6 +26,7 @@ fun main(args: Array<String>) {
     initializeWpilib()
 
     Drivetrain
+    Intake
 
     runRobotProgram(Robot)
 }

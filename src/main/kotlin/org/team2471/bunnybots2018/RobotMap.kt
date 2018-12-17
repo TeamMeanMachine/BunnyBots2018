@@ -12,3 +12,8 @@ object Talons {
     const val INTAKE_LEFT = 6
     const val INTAKE_RIGHT = 11
 }
+
+object Solenoids {
+    const val SORTER = 0
+    const val SHIFTER = 1
+}
