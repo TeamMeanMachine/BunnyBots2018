@@ -24,6 +24,7 @@ deploy {
 
 repositories {
     mavenCentral()
+    maven { url 'https://jitpack.io' }
 }
 
 wpi {
@@ -38,6 +39,7 @@ dependencies {
     compile wpilib()
     compile ctre()
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.0"
+    compile 'com.github.juchong:ADIS16448-RoboRIO-Driver:2018.2'
     compile project("meanlib")
 }
 
