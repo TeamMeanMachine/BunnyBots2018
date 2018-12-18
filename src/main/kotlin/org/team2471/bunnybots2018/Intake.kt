@@ -3,6 +3,7 @@ package org.team2471.bunnybots2018
 import org.team2471.frc.lib.actuators.TalonSRX
 import org.team2471.frc.lib.coroutines.periodic
 import org.team2471.frc.lib.framework.DaemonSubsystem
+import org.team2471.frc.lib.framework.use
 
 object Intake : DaemonSubsystem("Intake") {
     private val motors = TalonSRX(Talons.INTAKE_LEFT, Talons.INTAKE_RIGHT).config {
@@ -23,7 +24,7 @@ object Intake : DaemonSubsystem("Intake") {
                 val speed = Math.abs(Drivetrain.speed)
                 if (Math.abs(Drivetrain.speed) > 0.5) {
                     val percentMaxSpeed = speed / Drivetrain.MAX_SPEED
-                    intake(0.4 + percentMaxSpeed * 0.6)
+                    intake(0.6 + percentMaxSpeed * 0.4)
                 } else {
                     stop()
                 }
@@ -31,5 +32,11 @@ object Intake : DaemonSubsystem("Intake") {
         } finally {
             stop()
         }
+    }
+}
+
+suspend fun Intake.flipCubes() = use(Intake) {
+    periodic {
+        flip()
     }
 }
