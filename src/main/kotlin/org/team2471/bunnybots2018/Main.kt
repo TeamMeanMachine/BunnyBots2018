@@ -1,20 +1,21 @@
 package org.team2471.bunnybots2018
 
-import org.team2471.frc.lib.framework.RobotProgram
-import org.team2471.frc.lib.framework.initializeWpilib
-import org.team2471.frc.lib.framework.runRobotProgram
+import org.team2471.frc.lib.framework.*
 
 object Robot : RobotProgram {
     override suspend fun autonomous() {
-        println("Autonomous")
+        Drivetrain.enable()
+        Intake.enable()
     }
 
     override suspend fun teleop() {
-        println("Teleop")
+        Drivetrain.enable()
+        Intake.enable()
     }
 
     override suspend fun disable() {
-        println("Disable")
+        Drivetrain.disable()
+        Intake.disable()
     }
 
     override suspend fun test() {
@@ -26,6 +27,8 @@ fun main(args: Array<String>) {
     initializeWpilib()
 
     Drivetrain
+    Intake
+    OI
 
     runRobotProgram(Robot)
 }
