@@ -28,6 +28,7 @@ fun main(args: Array<String>) {
 
     Drivetrain
     Intake
+    Uptake
     OI
 
     runRobotProgram(Robot)

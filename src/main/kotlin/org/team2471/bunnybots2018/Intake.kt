@@ -20,7 +20,7 @@ object Intake : DaemonSubsystem("Intake") {
     override suspend fun default() {
         try {
             periodic {
-//                println("Speed: ${Drivetrain.speed}")
+                //                println("Speed: ${Drivetrain.speed}")
                 val speed = Math.abs(Drivetrain.speed)
                 if (Math.abs(Drivetrain.speed) > 0.5) {
                     val percentMaxSpeed = speed / Drivetrain.MAX_SPEED

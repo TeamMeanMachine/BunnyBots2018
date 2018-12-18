@@ -9,8 +9,8 @@ import org.team2471.frc.lib.framework.use
 object Drivetrain : DaemonSubsystem("Drivetrain") {
     //    private const val EDGES_PER_100_MS = 216 * 6.0 * Math.PI / 10.0
     private const val TICKS_PER_FOOT = 522.0
-    private const val HIGH_SHIFTPOINT = 5.0
-    private const val LOW_SHIFTPOINT = 4.0
+    private const val HIGH_SHIFTPOINT = 4.0
+    private const val LOW_SHIFTPOINT = 3.5
 
     private const val PEAK_CURRENT_LIMIT = 0
     private const val CONTINUOUS_CURRENT_LIMIT = 25
@@ -63,8 +63,8 @@ object Drivetrain : DaemonSubsystem("Drivetrain") {
             rightPower /= maxPower
         }
 
-        val speed = speed
-        if(speed > HIGH_SHIFTPOINT) {
+        val speed = Math.abs(speed)
+        if (speed > HIGH_SHIFTPOINT) {
             shifter.set(true)
         } else if (speed < LOW_SHIFTPOINT) {
             shifter.set(false)
@@ -84,7 +84,6 @@ object Drivetrain : DaemonSubsystem("Drivetrain") {
         leftMotors.position = 0.0
         rightMotors.position = 0.0
         periodic {
-            println("Speed: $speed")
             val throttle = OI.driveThrottle
             val softTurn = OI.softTurn
             val hardTurn = OI.hardTurn

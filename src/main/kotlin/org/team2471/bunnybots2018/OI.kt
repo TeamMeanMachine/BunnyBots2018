@@ -21,19 +21,22 @@ object OI {
     val hardTurn: Double
         get() = driverController.getTriggerAxis(GenericHID.Hand.kRight) - driverController.getTriggerAxis(GenericHID.Hand.kLeft)
 
-    val uptakeDirection: Ballsorter.UptakeDirection?
+    val direction: Uptake.Direction?
         get() {
-            val left = operatorController.getTriggerAxis(GenericHID.Hand.kLeft)
-                    .deadband(0.2)
-            val right = operatorController.getTriggerAxis(GenericHID.Hand.kRight)
-                    .deadband(0.2)
+            val left = operatorController.getBumper(GenericHID.Hand.kLeft)
+            val right = operatorController.getBumper(GenericHID.Hand.kRight)
 
             return when {
-                left > right -> Ballsorter.UptakeDirection.LEFT
-                right > left -> Ballsorter.UptakeDirection.RIGHT
+                left == right -> null
+                left -> Uptake.Direction.LEFT
+                right -> Uptake.Direction.RIGHT
                 else -> null
             }
         }
+    val leftSpit: Double
+        get() = operatorController.getTriggerAxis(GenericHID.Hand.kLeft) * 0.6
+    val rightSpit: Double
+        get() = operatorController.getTriggerAxis(GenericHID.Hand.kRight) * 0.6
 
     init {
         driverController.createMappings {
