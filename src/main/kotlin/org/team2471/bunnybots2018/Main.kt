@@ -7,8 +7,9 @@ object Robot : RobotProgram {
     override suspend fun autonomous() {
         Drivetrain.enable()
         Intake.enable()
-
         Drivetrain.brake()
+        Drivetrain.zeroGyro()
+        AutoChooser.runAuto()
     }
 
     override suspend fun teleop() {
@@ -38,6 +39,7 @@ fun main(args: Array<String>) {
     Intake
     Uptake
     OI
+    AutoChooser
 
     runRobotProgram(Robot)
 }

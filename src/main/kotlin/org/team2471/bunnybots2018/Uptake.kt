@@ -44,6 +44,11 @@ object Uptake : DaemonSubsystem("Uptake") {
         }
     }
 
+    fun rawSpit(leftPower:Double, rightPower: Double) {
+        leftSpitter.setPercentOutput(leftPower)
+        rightSpitter.setPercentOutput(rightPower)
+    }
+
     fun stop() {
         lowerHorizontalBelt.setPercentOutput(0.0)
         verticalBelt.setPercentOutput(0.0)
