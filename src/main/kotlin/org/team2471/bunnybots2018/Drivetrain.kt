@@ -23,8 +23,8 @@ object Drivetrain : DaemonSubsystem("Drivetrain") {
     private const val DISTANCE_P = 2.0 * 0.40 // 0.75
     private const val DISTANCE_D = 0.5
 
-    const val GYRO_CORRECTION_P = 0.025 * 0.75
-    const val GYRO_CORRECTION_I = 0.002 * 0.5
+    const val GYRO_CORRECTION_P = 0.03
+    const val GYRO_CORRECTION_I = 0.001
     const val GYRO_CORRECTION_I_DECAY = 1.0 - 0.0
 
     const val MAX_SPEED = 14.0
@@ -33,8 +33,8 @@ object Drivetrain : DaemonSubsystem("Drivetrain") {
     const val LEFT_FEED_FORWARD_COEFFICIENT = 0.070541988198899
     const val LEFT_FEED_FORWARD_OFFSET = 0.021428882425651
 
-    const val RIGHT_FEED_FORWARD_COEFFICIENT = 0.071704891069425
-    const val RIGHT_FEED_FORWARD_OFFSET = 0.020459379452296
+    const val RIGHT_FEED_FORWARD_COEFFICIENT = 0.070541988198899
+    const val RIGHT_FEED_FORWARD_OFFSET = 0.021428882425651
 
 
     private val leftMotors = TalonSRX(Talons.DRIVE_LEFT_1, Talons.DRIVE_LEFT_2, Talons.DRIVE_LEFT_3).config {
@@ -95,12 +95,14 @@ object Drivetrain : DaemonSubsystem("Drivetrain") {
             val rightDistanceEntry = table.getEntry("Right Distance")
             val leftValuesEntry = table.getEntry("Left Motor Values")
             val rightValuesEntry = table.getEntry("Right Motor Values")
+            val gyroAngleEntry = table.getEntry("Gyro Angle")
 
             periodic(0.1) {
                 leftDistanceEntry.setDouble(leftDistance)
                 rightDistanceEntry.setDouble(rightDistance)
                 leftValuesEntry.setDouble(leftMotors.output)
                 rightValuesEntry.setDouble(rightMotors.output)
+                gyroAngleEntry.setDouble(gyroAngle)
             }
         }
     }
@@ -119,14 +121,18 @@ object Drivetrain : DaemonSubsystem("Drivetrain") {
 
         val speed = Math.abs(speed)
         if (speed > HIGH_SHIFTPOINT) {
-            shifter.set(true)
+            highGear()
         } else if (speed < LOW_SHIFTPOINT) {
-            shifter.set(false)
+            lowGear()
         }
 
         leftMotors.setPercentOutput(leftPower)
         rightMotors.setPercentOutput(rightPower)
     }
+
+    fun highGear() = shifter.set(true)
+
+    fun lowGear() = shifter.set(false)
 
     fun zeroDistances() {
         leftMotors.position = 0.0

@@ -10,6 +10,7 @@ import org.team2471.frc.lib.vector.Vector2
 
 suspend fun Drivetrain.driveAlongPath(path: Path2D) = use(Drivetrain) {
     println("Driving along path ${path.name}, duration: ${path.durationWithSpeed}, travel direction: ${path.robotDirection}, mirrored: ${path.isMirrored}")
+    Drivetrain.highGear()
     path.resetDistances()
     zeroDistances()
     var prevLeftDistance = 0.0
@@ -82,8 +83,6 @@ suspend fun Drivetrain.driveAlongPath(path: Path2D) = use(Drivetrain) {
             if (t >= path.durationWithSpeed) {
                 exitPeriodic()
             }
-
-
 
             prevTime = t
             prevLeftDistance = leftDistance

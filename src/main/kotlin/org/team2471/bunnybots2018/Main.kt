@@ -5,24 +5,17 @@ import org.team2471.frc.lib.framework.*
 
 object Robot : RobotProgram {
     override suspend fun autonomous() {
-        Drivetrain.enable()
-        Intake.enable()
         Drivetrain.brake()
         Drivetrain.zeroGyro()
         AutoChooser.runAuto()
     }
 
     override suspend fun teleop() {
-        Drivetrain.enable()
-        Intake.enable()
 
         Drivetrain.brake()
     }
 
     override suspend fun disable() {
-        Drivetrain.disable()
-        Intake.disable()
-
         suspendUntil { Math.abs(Drivetrain.speed) < 1.0 }
         Drivetrain.coast()
     }

@@ -29,6 +29,7 @@ object AutoChooser {
 
     private val autoChooser = SendableChooser<String>().apply {
         addDefault("Simple Auto", "Simple Auto")
+        addObject("Epic Auto", "Epic Auto")
     }
 
     init {
@@ -96,6 +97,33 @@ private suspend fun simpleAuto(autonomous: Autonomous) {
     }, {
         suspendUntil { Drivetrain.distance < -6.0 }
         Uptake.spit(Uptake.Direction.RIGHT, 0.3, false)
+    })
+    Uptake.stop()
+}
+
+private suspend fun epicAuto(autonomous: Autonomous) {
+    Intake.intake(1.0)
+    parallel({
+        Drivetrain.driveAlongPath(autonomous["Start to Middle"].apply {
+            isMirrored = false
+            speed = 1.0
+        })
+    }, {
+        Uptake.rawSpit(0.3, 0.0)
+        delay(0.5)
+        Uptake.uptake(Uptake.Direction.LEFT, false)
+    })
+
+    Drivetrain.driveAlongPath(autonomous["Across"])
+
+    parallel({
+        Drivetrain.driveAlongPath(autonomous["Start to Middle"].apply {
+            isMirrored = true
+            speed = -1.0
+        })
+    }, {
+        delay(1.0)
+        Uptake.spit(Uptake.Direction.LEFT, 0.4, false)
     })
     Uptake.stop()
 }
