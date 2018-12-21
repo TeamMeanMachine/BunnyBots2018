@@ -30,6 +30,7 @@ object AutoChooser {
     private val autoChooser = SendableChooser<String>().apply {
         addDefault("Simple Auto", "Simple Auto")
         addObject("Epic Auto", "Epic Auto")
+        addObject("U Auto", "U Auto")
     }
 
     init {
@@ -75,6 +76,7 @@ object AutoChooser {
         val auto = autoChooser.selected
         when (auto) {
             "Simple Auto" -> simpleAuto(autonomi[auto])
+            "U Auto" -> uAuto(autonomi[auto])
             else -> throw IllegalStateException("Unknown auto: $auto")
         }
     }
@@ -86,8 +88,9 @@ private suspend fun simpleAuto(autonomous: Autonomous) {
         Drivetrain.driveAlongPath(autonomous["Forward"])
         println("Path 1 Done")
     }, {
-        Uptake.rawSpit(0.3, 0.0)
-        delay(0.5)
+        Uptake.rawSpit(0.5, 0.3)
+        delay(0.75)
+        Uptake.stop()
         Uptake.uptake(Uptake.Direction.RIGHT, false)
     })
 
@@ -99,6 +102,10 @@ private suspend fun simpleAuto(autonomous: Autonomous) {
         Uptake.spit(Uptake.Direction.RIGHT, 0.3, false)
     })
     Uptake.stop()
+}
+
+private suspend fun uAuto(autonomous: Autonomous) {
+    Drivetrain.driveAlongPath(autonomous["Start and Around"])
 }
 
 private suspend fun epicAuto(autonomous: Autonomous) {

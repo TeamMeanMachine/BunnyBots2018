@@ -8,12 +8,13 @@ import org.team2471.frc.lib.framework.use
 object Intake : DaemonSubsystem("Intake") {
     private val motors = TalonSRX(Talons.INTAKE_LEFT, Talons.INTAKE_RIGHT).config {
         openLoopRamp(0.1)
+        currentLimit(25, 0, 0)
         ctreFollowers[0].inverted = true
     }
 
     fun intake(speed: Double) = motors.setPercentOutput(speed)
 
-    fun flip() = motors.setPercentOutput(-1.0)
+    fun flip() = motors.setPercentOutput(-0.6)
 
     fun stop() = motors.setPercentOutput(0.0)
 

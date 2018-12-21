@@ -24,7 +24,7 @@ object Drivetrain : DaemonSubsystem("Drivetrain") {
     private const val DISTANCE_D = 0.5
 
     const val GYRO_CORRECTION_P = 0.03
-    const val GYRO_CORRECTION_I = 0.001
+    const val GYRO_CORRECTION_I = 0.004
     const val GYRO_CORRECTION_I_DECAY = 1.0 - 0.0
 
     const val MAX_SPEED = 14.0
