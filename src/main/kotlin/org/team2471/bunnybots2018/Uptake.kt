@@ -1,36 +1,44 @@
 package org.team2471.bunnybots2018
 
-import edu.wpi.first.wpilibj.DigitalInput
-import edu.wpi.first.wpilibj.Solenoid
-import edu.wpi.first.wpilibj.Timer
+import edu.wpi.first.wpilibj.*
+import kotlinx.coroutines.launch
 import org.team2471.frc.lib.actuators.TalonSRX
+import org.team2471.frc.lib.coroutines.MeanlibScope
 import org.team2471.frc.lib.coroutines.periodic
 import org.team2471.frc.lib.framework.DaemonSubsystem
 
 object Uptake : DaemonSubsystem("Uptake") {
-    private const val UPTAKE_SPEED = 0.7
-    private const val FEEDER_SPEED = 0.5
+    private const val UPTAKE_SPEED = 0.6
+    private const val FEEDER_SPEED = 0.6
     private const val SEPERATOR_SPEED = 0.6
 
     private val lowerHorizontalBelt = TalonSRX(Talons.LOWER_HORIZ_BELT).config {
         inverted(true)
     }
+
     private val verticalBelt = TalonSRX(Talons.VERTICAL_BELT)
+
     private val ballSorter = Solenoid(Solenoids.SORTER)
-    private val colorSensor = DigitalInput(0)
+
+    private val sensorInput = DigitalInput(0)
+
+    private val sensorOutput = DigitalOutput(1)
+
     private val topHorizontalBelt = TalonSRX(Talons.UPPER_HORIZ_BELT)
+
     private val leftSpitter = TalonSRX(Talons.LEFT_SPITTER).config {
         inverted(true)
     }
 
     private val rightSpitter = TalonSRX(Talons.RIGHT_SPITTER)
 
-    private val timer = Timer().apply { start() }
-
-    val ballColor: Color
-        get() = if (colorSensor.get()) Color.BLUE else Color.RED
-
-    private var lastBallColor = ballColor
+    init {
+        MeanlibScope.launch {
+            periodic(5.0) {
+                sensorOutput.set(DriverStation.getInstance().alliance == DriverStation.Alliance.Blue)
+            }
+        }
+    }
 
     fun uptake(direction: Direction, filterBalls: Boolean) {
         lowerHorizontalBelt.setPercentOutput(FEEDER_SPEED)
@@ -38,12 +46,7 @@ object Uptake : DaemonSubsystem("Uptake") {
 
         topHorizontalBelt.setPercentOutput(if (direction == Direction.LEFT) SEPERATOR_SPEED else -SEPERATOR_SPEED)
 
-//        ballSorter.set(ballColor == Color.BLUE)
-//        val ballColor = ballColor
-//        if (lastBallColor != ballColor && ballColor == Color.BLUE) timer.reset()
-//        lastBallColor = ballColor
-//
-//        ballSorter.set(filterBalls && timer.get() < 0.1)
+        ballSorter.set(filterBalls && sensorInput.get())
     }
 
     fun spit(direction: Direction, power: Double, filterBalls: Boolean) {
@@ -55,6 +58,11 @@ object Uptake : DaemonSubsystem("Uptake") {
             rightSpitter.setPercentOutput(power)
             leftSpitter.setPercentOutput(0.0)
         }
+    }
+
+    fun antiJam() {
+        verticalBelt.setPercentOutput(-UPTAKE_SPEED)
+        lowerHorizontalBelt.setPercentOutput(-FEEDER_SPEED)
     }
 
     fun rawSpit(leftPower:Double, rightPower: Double) {
@@ -69,6 +77,10 @@ object Uptake : DaemonSubsystem("Uptake") {
         rightSpitter.setPercentOutput(0.0)
         leftSpitter.setPercentOutput(0.0)
         ballSorter.set(false)
+    }
+
+    override fun reset() {
+        println("Uptake.reset() called")
     }
 
     override suspend fun default() {

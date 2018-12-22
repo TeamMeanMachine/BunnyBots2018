@@ -105,7 +105,19 @@ private suspend fun simpleAuto(autonomous: Autonomous) {
 }
 
 private suspend fun uAuto(autonomous: Autonomous) {
-    Drivetrain.driveAlongPath(autonomous["Start and Around"])
+    Drivetrain.highGear()
+    Intake.intake(1.0)
+    parallel({
+        Drivetrain.driveAlongPath(autonomous["Start and Around"])
+    }, {
+        Uptake.rawSpit(0.55, 0.4)
+        delay(0.5)
+        Uptake.stop()
+        Uptake.uptake(Uptake.Direction.LEFT, true)
+        delay(6.7)
+        Uptake.spit(Uptake.Direction.LEFT, 0.4, true)
+    })
+    Uptake.stop()
 }
 
 private suspend fun epicAuto(autonomous: Autonomous) {

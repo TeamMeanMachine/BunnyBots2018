@@ -18,6 +18,8 @@ deploy {
         // We still use FRCJavaArtifact since kotlin does respond as a Java build.
         artifact('frcKotlin', FRCJavaArtifact) {
             targets << "roborio"
+            debug = false
+            debugPort = 8348
         }
     }
 }

@@ -13,8 +13,8 @@ import org.team2471.frc.lib.framework.DaemonSubsystem
 object Drivetrain : DaemonSubsystem("Drivetrain") {
     //    private const val EDGES_PER_100_MS = 216 * 6.0 * Math.PI / 10.0
     private const val TICKS_PER_FOOT = 522.0
-    private const val HIGH_SHIFTPOINT = 4.0
-    private const val LOW_SHIFTPOINT = 3.5
+    private const val HIGH_SHIFTPOINT = 5.0
+    private const val LOW_SHIFTPOINT = 4.5
 
     private const val PEAK_CURRENT_LIMIT = 0
     private const val CONTINUOUS_CURRENT_LIMIT = 25
@@ -24,7 +24,7 @@ object Drivetrain : DaemonSubsystem("Drivetrain") {
     private const val DISTANCE_D = 0.5
 
     const val GYRO_CORRECTION_P = 0.03
-    const val GYRO_CORRECTION_I = 0.004
+    const val GYRO_CORRECTION_I = 0.003
     const val GYRO_CORRECTION_I_DECAY = 1.0 - 0.0
 
     const val MAX_SPEED = 14.0

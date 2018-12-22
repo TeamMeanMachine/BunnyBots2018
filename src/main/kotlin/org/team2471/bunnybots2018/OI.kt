@@ -2,8 +2,11 @@ package org.team2471.bunnybots2018
 
 import edu.wpi.first.wpilibj.GenericHID
 import edu.wpi.first.wpilibj.XboxController
+import org.team2471.frc.lib.coroutines.periodic
+import org.team2471.frc.lib.framework.bHold
 import org.team2471.frc.lib.framework.createMappings
 import org.team2471.frc.lib.framework.leftBumperHold
+import org.team2471.frc.lib.framework.use
 import org.team2471.frc.lib.math.deadband
 
 object OI {
@@ -41,6 +44,15 @@ object OI {
     init {
         driverController.createMappings {
             leftBumperHold { Intake.flipCubes() }
+        }
+        operatorController.createMappings {
+            bHold {
+                use(Uptake) {
+                    periodic {
+                        Uptake.antiJam()
+                    }
+                }
+            }
         }
     }
 }
