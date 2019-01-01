@@ -11,7 +11,6 @@ import org.team2471.frc.lib.coroutines.periodic
 import org.team2471.frc.lib.framework.DaemonSubsystem
 
 object Drivetrain : DaemonSubsystem("Drivetrain") {
-    //    private const val EDGES_PER_100_MS = 216 * 6.0 * Math.PI / 10.0
     private const val TICKS_PER_FOOT = 522.0
     private const val HIGH_SHIFTPOINT = 5.0
     private const val LOW_SHIFTPOINT = 4.5

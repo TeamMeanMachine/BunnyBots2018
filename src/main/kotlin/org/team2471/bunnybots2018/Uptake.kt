@@ -1,6 +1,7 @@
 package org.team2471.bunnybots2018
 
 import edu.wpi.first.wpilibj.*
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import kotlinx.coroutines.launch
 import org.team2471.frc.lib.actuators.TalonSRX
 import org.team2471.frc.lib.coroutines.MeanlibScope
@@ -24,6 +25,8 @@ object Uptake : DaemonSubsystem("Uptake") {
 
     private val sensorOutput = DigitalOutput(1)
 
+    private val useColorSensor get() = SmartDashboard.getBoolean("Use Color Sensor", true)
+
     private val topHorizontalBelt = TalonSRX(Talons.UPPER_HORIZ_BELT)
 
     private val leftSpitter = TalonSRX(Talons.LEFT_SPITTER).config {
@@ -34,6 +37,7 @@ object Uptake : DaemonSubsystem("Uptake") {
 
     init {
         MeanlibScope.launch {
+            SmartDashboard.putBoolean("Use Color Sensor", useColorSensor)
             periodic(5.0) {
                 sensorOutput.set(DriverStation.getInstance().alliance == DriverStation.Alliance.Blue)
             }
@@ -46,16 +50,17 @@ object Uptake : DaemonSubsystem("Uptake") {
 
         topHorizontalBelt.setPercentOutput(if (direction == Direction.LEFT) SEPERATOR_SPEED else -SEPERATOR_SPEED)
 
-        ballSorter.set(filterBalls && sensorInput.get())
+        ballSorter.set(useColorSensor && filterBalls && sensorInput.get())
     }
 
     fun spit(direction: Direction, power: Double, filterBalls: Boolean) {
         uptake(direction, filterBalls)
+        val scalePower = power * 0.3 + 0.3
         if (direction == Direction.LEFT) {
-            leftSpitter.setPercentOutput(power)
+            leftSpitter.setPercentOutput(scalePower)
             rightSpitter.setPercentOutput(0.0)
         } else {
-            rightSpitter.setPercentOutput(power)
+            rightSpitter.setPercentOutput(scalePower)
             leftSpitter.setPercentOutput(0.0)
         }
     }

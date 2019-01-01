@@ -28,9 +28,9 @@ object AutoChooser {
     }
 
     private val autoChooser = SendableChooser<String>().apply {
-        addDefault("Simple Auto", "Simple Auto")
+        addDefault("U Auto", "U Auto")
         addObject("Epic Auto", "Epic Auto")
-        addObject("U Auto", "U Auto")
+        addObject("Simple Auto", "Simple Auto")
     }
 
     init {
@@ -45,6 +45,9 @@ object AutoChooser {
             DriverStation.reportError("Autonomi cache could not be found", false)
             autonomi = Autonomi()
         }
+
+
+
 
         NetworkTableInstance.getDefault()
             .getTable("PathVisualizer")
@@ -110,12 +113,12 @@ private suspend fun uAuto(autonomous: Autonomous) {
     parallel({
         Drivetrain.driveAlongPath(autonomous["Start and Around"])
     }, {
-        Uptake.rawSpit(0.55, 0.4)
-        delay(0.5)
+        Uptake.rawSpit(0.4, 0.4)
+        delay(0.8)
         Uptake.stop()
         Uptake.uptake(Uptake.Direction.LEFT, true)
-        delay(6.7)
-        Uptake.spit(Uptake.Direction.LEFT, 0.4, true)
+        delay(7.0)
+        Uptake.spit(Uptake.Direction.LEFT, 0.65, true)
     })
     Uptake.stop()
 }

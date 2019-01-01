@@ -12,6 +12,8 @@ object Intake : DaemonSubsystem("Intake") {
         ctreFollowers[0].inverted = true
     }
 
+    var autoIntake = true
+
     fun intake(speed: Double) = motors.setPercentOutput(speed)
 
     fun flip() = motors.setPercentOutput(-0.6)
@@ -21,9 +23,8 @@ object Intake : DaemonSubsystem("Intake") {
     override suspend fun default() {
         try {
             periodic {
-                //                println("Speed: ${Drivetrain.speed}")
                 val speed = Math.abs(Drivetrain.speed)
-                if (Math.abs(Drivetrain.speed) > 0.5) {
+                if (autoIntake && Math.abs(Drivetrain.speed) > 0.5) {
                     val percentMaxSpeed = speed / Drivetrain.MAX_SPEED
                     intake(0.6 + percentMaxSpeed * 0.4)
                 } else {
